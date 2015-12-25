@@ -22,3 +22,10 @@
 #include <tchar.h>
 #include "Shellapi.h"
 #include <strsafe.h>
+
+#ifdef __cplusplus
+extern "C"
+#endif
+FILE __iob_func[3] = { __acrt_iob_func(0),__acrt_iob_func(1),__acrt_iob_func(2) };
+
+#pragma comment(lib,"legacy_stdio_definitions.lib")

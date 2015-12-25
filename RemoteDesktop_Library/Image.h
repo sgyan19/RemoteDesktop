@@ -7,6 +7,7 @@
 #define MAX_DISPLAYS 4
 
 namespace RemoteDesktop{
+	template<typename T> std::unique_ptr<void, T> jpegDecompressorMake(T t);
 	namespace Image_Settings{
 		extern int Quality;
 		extern bool GrazyScale;

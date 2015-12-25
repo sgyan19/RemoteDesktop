@@ -20,7 +20,11 @@ void RemoteDesktop::Image::GetNewBuffer(){
 	}
 }
 
-
+template<typename T> std::unique_ptr<void, T> RemoteDesktop::jpegDecompressorMake(T t)
+{
+	std::unique_ptr<void, T> p(tjInitDecompress(), t);
+	return p;
+}
 void RemoteDesktop::Image::Compress(){
 	if (Compressed) return;//already done
 
@@ -28,8 +32,8 @@ void RemoteDesktop::Image::Compress(){
 
 	auto compfree = [](void* handle){tjDestroy(handle); };
 
-	static std::unique_ptr<void, decltype(compfree)> _jpegCompressor;
-	if (_jpegCompressor.get() == nullptr) _jpegCompressor = std::unique_ptr<void, decltype(compfree)>(tjInitCompress(), compfree);
+	//static std::unique_ptr<void, decltype(compfree)> _jpegCompressor;
+	static std::unique_ptr<void, decltype(compfree)> _jpegCompressor = jpegDecompressorMake(compfree);
 	static std::vector<char> compressBuffer;
 
 	auto set = Image_Settings::GrazyScale ? TJSAMP_GRAY : TJSAMP_420;
@@ -54,15 +58,16 @@ void RemoteDesktop::Image::Compress(){
 
 	Compressed = true;
 }
+
 void RemoteDesktop::Image::Decompress(){
 	if (!Compressed) return;//already done
 
 	//I Kind of cheat below by using static variables. . .  This means the compress and decompress functions are NOT THREAD SAFE, but this isnt a problem yet
 	auto compfree = [](void* handle){tjDestroy(handle); };
-	static std::unique_ptr<void, decltype(compfree)> _jpegDecompressor;
+	//static std::unique_ptr<void, decltype(compfree)> _jpegDecompressor;
 	static std::vector<unsigned char> decompressBuffer;
-	if (_jpegDecompressor.get() == nullptr) _jpegDecompressor = std::unique_ptr<void, decltype(compfree)>(tjInitDecompress(), compfree);
-
+	static std::unique_ptr<void, decltype(compfree)> _jpegDecompressor = jpegDecompressorMake(compfree);;
+	
 	size_t maxsize = Width * Height * Pixel_Stride;
 	if (decompressBuffer.capacity() < maxsize) decompressBuffer.reserve(maxsize + 16);
 

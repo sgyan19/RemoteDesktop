@@ -10,7 +10,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 #if _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-
 	LPWSTR* argv = CommandLineToArgvW(GetCommandLine(), &argc);
 	RemoteDesktop::Startup(argv, argc, true);
 	return 0;

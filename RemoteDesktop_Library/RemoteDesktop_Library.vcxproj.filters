@@ -150,6 +150,7 @@
     <ClInclude Include="Desktop_Background.h">
       <Filter>Desktop</Filter>
     </ClInclude>
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetworkSetup.cpp">
